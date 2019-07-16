@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+  "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.aohashi.demo.dao.VideoDao">
+
+
+    <insert id="insertVideo" useGeneratedKeys="true" keyProperty="vid" parameterType="com.aohashi.demo.entity.Video">
+        insert into video (title, introduction, img, url,category,year) values
+            (#{title}, #{introduction}, #{img}, #{url},#{category},#{year})
+    </insert>
+
+    <update id="updateVideoById" parameterType="com.aohashi.demo.entity.Video" flushCache="true">
+        update video
+        set
+        <if test="title !=null "> title=#{title},</if>
+        <if test="introduction !=null "> introduction=#{introduction},</if>
+        <if test="img !=null "> img=#{img},</if>
+        <if test="url !=null "> url=#{url},</if>
+        <if test="category !=null "> category=#{category},</if>
+        <if test="year !=null "> year=#{year}</if>
+        where vid=#{vid}
+    </update>
+
+    <delete id="deleteVideoById">
+        delete from video where vid = #{vid}
+    </delete>
+
+    <select id="selectVideos"  resultType="com.aohashi.demo.entity.Video">
+        select vid,title,introduction,img, url,category,year,add_time from video
+        <if test="offset !=null and limit != null">
+            limit #{offset},#{limit}
+        </if>
+    </select>
+
+    <select id="selectVideoById" parameterType="int" resultType="com.aohashi.demo.entity.Video">
+        select vid,title,introduction,img, url,category,year,add_time
+        from video where vid = #{vid};
+    </select>
+
+</mapper>
