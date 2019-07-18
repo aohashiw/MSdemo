@@ -6,8 +6,6 @@ import com.aohashi.demo.service.VideoService;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

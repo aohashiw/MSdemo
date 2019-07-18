@@ -5,8 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -15,7 +14,7 @@ public class MailController {
     @Autowired
     private MailSender mailSender;
 
-    @RequestMapping(value = "/send",method = RequestMethod.POST)
+    @PostMapping(value = "/send")
     public Map<String,Object> sendMail(String email){
         Map result = new HashMap();
         SimpleMailMessage message = new SimpleMailMessage();
