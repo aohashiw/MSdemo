@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+  "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.aohashi.demo.dao.UserDao">
+
+
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id" parameterType="com.aohashi.demo.entity.User">
+        insert into user (username, password, salt, email,department,job) values
+            (#{username}, #{password}, #{salt}, #{email},#{department},#{job})
+    </insert>
+
+
+
+<!--    <delete id="deleteVideoById">-->
+<!--        delete from video where vid = #{vid}-->
+<!--    </delete>-->
+
+    <resultMap id="userFullMap" type="com.aohashi.demo.entity.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+        <result property="department" column="department"/>
+        <result property="job" column="job"/>
+        <collection property="roles"  ofType="com.aohashi.demo.entity.SystemRole">
+            <id property="id" column="rid"/>
+            <result property="role" column="role" />
+        </collection>
+    </resultMap>
+
+
+    <select id="selectUsers" resultMap="userFullMap">
+        select * from user u
+        left join user_role m on u.id=m.uid
+        left join role r on m.rid = r.id
+<!--        <if test="offset !=null and limit != null">-->
+<!--            limit #{offset},#{limit}-->
+<!--        </if>-->
+
+    </select>
+
+    <select id="selectUserById" parameterType="int" resultMap="userFullMap">
+        select * from user u
+        left join user_role m on u.id=m.uid
+        left join role r on m.rid=r.id
+        where u.id=#{id}
+    </select>
+
+
+    <select id="selectUserByName" parameterType="String" resultMap="userFullMap">
+        select id,username,password,salt,email,department, job
+        from user where username = #{username};
+    </select>
+
+    <select id="selectUserByEmail" parameterType="String" resultMap="userFullMap">
+        select id,username,password,salt,email,department, job
+        from user where email = #{email};
+    </select>
+
+    <update id="updatePassword" parameterType="com.aohashi.demo.entity.User" flushCache="true">
+            update user set password = #{password},salt=#{salt}
+            where username = #{username};
+    </update>
+
+    <update id="updateUser" parameterType="com.aohashi.demo.entity.User" flushCache="true">
+            update user set email = #{email}
+            where username = #{username};
+    </update>
+
+</mapper>

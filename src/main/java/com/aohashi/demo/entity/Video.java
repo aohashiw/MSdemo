@@ -18,6 +18,7 @@ public class Video implements Serializable {
     public Video() {
     }
 
+
     public Video(int vid, String title, String introduction, String img, String url, String category, int year,
                  Timestamp addTime) {
         this.vid = vid;

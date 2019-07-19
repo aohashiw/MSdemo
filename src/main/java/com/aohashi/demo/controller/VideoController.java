@@ -69,8 +69,11 @@ public class VideoController {
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     public Map<String,Object> listVideo(@RequestParam int page){
         Map result = new HashMap();
+
         Page<Video> videos = videoService.findVideos(page);
+
         PageInfo<Video> pageInfo = new PageInfo<>(videos);
+
         result.put("videos",pageInfo);
         result.put("status",200);
         return result;
