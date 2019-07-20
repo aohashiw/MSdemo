@@ -17,11 +17,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordHelper passwordHelper;
 
-
-
     @Override
     public User findUserByID(int id) {
-        System.out.println(userDao.selectUserById(id));
         return userDao.selectUserById(id);
     }
     @Override

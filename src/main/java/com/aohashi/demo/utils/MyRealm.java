@@ -14,9 +14,14 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+
+@Service
 public class MyRealm extends AuthorizingRealm {
 
     private static final Logger LOGGER = LogManager.getLogger(MyRealm.class);
@@ -31,19 +36,19 @@ public class MyRealm extends AuthorizingRealm {
     }
 
     /**
-     * 根据用户信息返回权限信息
+     * 只有当需要检测用户权限的时候才会调用此方法，例如checkRole,checkPermission之类的
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+
         String username = JWTUtil.getUsername(principals.toString());
-        System.out.println(username);
         User user = userService.findUserByName(username);
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-
         for (SystemRole role:user.getRoles()){
             for (SystemPermission permission:role.getPermissions()){
                 authorizationInfo.addStringPermission(permission.getName());
             }
+            authorizationInfo.addRole(role.getRole());
         }
         return authorizationInfo;
     }
@@ -60,15 +65,20 @@ public class MyRealm extends AuthorizingRealm {
             throw new AuthenticationException("Token invalid");
         }
         User user = userService.findUserByName(username);
-        System.out.println(user);
         if (user==null){
             throw new AuthenticationException("User didn't existed!");
         }
-
         if (!JWTUtil.verify(token,username,user.getPassword())){
             throw new AuthenticationException("Password Error!");
         }
+        /// 获取当前线程的request
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        request.setAttribute("user",user);
 
-        return new SimpleAuthenticationInfo(token,token,"my_realm");
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(token,token,"my_realm");
+        return authenticationInfo;
+
     }
+
+
 }

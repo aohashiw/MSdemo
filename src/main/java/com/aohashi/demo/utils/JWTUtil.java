@@ -13,20 +13,16 @@ import java.util.Map;
 
 public class JWTUtil {
 
-    // 过期时间
-    private static final long EXPIRE_TIME = 5*60*1000;
+    // 过期时间 5*60
+    private static final long EXPIRE_TIME = 10*24*60*60*1000;
 
     //生成签名
     public  static String createToken(String username,String password) {
         try {
 
             Algorithm algorithm = Algorithm.HMAC256(password);
-            Map<String, Object> header = new HashMap<String, Object>();
-            header.put("alg", "HS256");
-            header.put("typ", "JWT");
             Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
             String token = JWT.create()
-                              .withHeader(header)
                               .withClaim("username",username)
                               .withIssuer("SERVICE") //前面是谁生成，如服务器
                               .withSubject("AUTH")
@@ -63,6 +59,8 @@ public class JWTUtil {
             return null;
         }
     }
+
+
 
 
 

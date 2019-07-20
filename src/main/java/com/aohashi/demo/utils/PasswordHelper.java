@@ -20,4 +20,9 @@ public class PasswordHelper {
         String newPassword = new SimpleHash(ALGORITHM_NAME, user.getPassword(), ByteSource.Util.bytes(user.getCredentialsSalt()),HASH_ITERATIONS).toHex();
         user.setPassword(newPassword);
     }
+
+    public static boolean comparePassword(User user,String password){
+        String newPassword = new SimpleHash(ALGORITHM_NAME, password, ByteSource.Util.bytes(user.getCredentialsSalt()),HASH_ITERATIONS).toHex();
+        return newPassword.equals(user.getPassword());
+    }
 }
